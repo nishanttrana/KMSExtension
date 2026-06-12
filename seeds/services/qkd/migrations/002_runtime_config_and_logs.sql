@@ -1,0 +1,19 @@
+ALTER TABLE qkd_config ADD COLUMN IF NOT EXISTS pool_capacity INTEGER NOT NULL DEFAULT 1250000;
+ALTER TABLE qkd_config ADD COLUMN IF NOT EXISTS service_enabled BOOLEAN NOT NULL DEFAULT TRUE;
+ALTER TABLE qkd_config ADD COLUMN IF NOT EXISTS etsi_api_enabled BOOLEAN NOT NULL DEFAULT TRUE;
+ALTER TABLE qkd_config ADD COLUMN IF NOT EXISTS protocol TEXT NOT NULL DEFAULT 'ETSI GS QKD 014';
+ALTER TABLE qkd_config ADD COLUMN IF NOT EXISTS distance_km DOUBLE PRECISION NOT NULL DEFAULT 47;
+
+CREATE TABLE IF NOT EXISTS qkd_logs (
+    id          TEXT NOT NULL,
+    tenant_id   TEXT NOT NULL,
+    action      TEXT NOT NULL,
+    level       TEXT NOT NULL DEFAULT 'info',
+    message     TEXT NOT NULL DEFAULT '',
+    meta_json   TEXT NOT NULL DEFAULT '{}',
+    created_at  TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (tenant_id, id)
+);
+
+CREATE INDEX IF NOT EXISTS idx_qkd_logs_tenant_created
+    ON qkd_logs (tenant_id, created_at DESC);
