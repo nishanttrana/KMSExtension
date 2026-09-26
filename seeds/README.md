@@ -15,6 +15,7 @@ from the core repo); the nested `go.mod` keeps them out of the root build.
 | `services/tfe` | Transparent file encryption | Overlapped core dataprotect; differentiate before promotion |
 | `services/ai` | LLM assistant + DLP engine | Core kept ai-gateway (LLM DLP); this is the assistant surface |
 | `pkg/dltaudit` | Blockchain (Ethereum/Hyperledger) audit anchoring | Core audit hash chain + Merkle epochs cover transparency; promote only for external-anchor demand |
+| `services/software-vault` | "Software HSM" vault (moved from KMSBeta `691a524ec`, 2026-09-26) | Nothing in the core called it. The core integrates real HSMs through its PKCS#11 hsm-connector; there is no Vecta HSM. Promote only as a clearly labelled software key store, never presented as an HSM |
 
 The edge/IoT device registry is **not** a seed — it is already live as the
 first extension service in `services/edge`, ported from keycore.
