@@ -1,0 +1,378 @@
+syntax = "proto3";
+
+package vecta.payment.v1;
+
+option go_package = "vecta-kms/proto/payment;paymentpb";
+
+service PaymentService {
+  rpc RegisterPaymentKey (RegisterPaymentKeyRequest) returns (PaymentKeyResponse);
+  rpc ListPaymentKeys (ListPaymentKeysRequest) returns (ListPaymentKeysResponse);
+  rpc GetPaymentKey (GetPaymentKeyRequest) returns (PaymentKeyResponse);
+  rpc UpdatePaymentKey (UpdatePaymentKeyRequest) returns (PaymentKeyResponse);
+  rpc RotatePaymentKey (RotatePaymentKeyRequest) returns (RotatePaymentKeyResponse);
+
+  rpc CreateTR31 (CreateTR31Request) returns (CreateTR31Response);
+  rpc ParseTR31 (ParseTR31Request) returns (ParseTR31Response);
+  rpc TranslateTR31 (TranslateTR31Request) returns (TranslateTR31Response);
+  rpc ValidateTR31 (ValidateTR31Request) returns (ValidateTR31Response);
+  rpc ListTR31KeyUsages (ListTR31KeyUsagesRequest) returns (ListTR31KeyUsagesResponse);
+
+  rpc TranslatePIN (TranslatePINRequest) returns (TranslatePINResponse);
+  rpc GeneratePVV (PVVGenerateRequest) returns (PVVGenerateResponse);
+  rpc VerifyPVV (PVVVerifyRequest) returns (PVVVerifyResponse);
+  rpc GenerateOffset (OffsetGenerateRequest) returns (OffsetGenerateResponse);
+  rpc VerifyOffset (OffsetVerifyRequest) returns (OffsetVerifyResponse);
+  rpc ComputeCVV (CVVComputeRequest) returns (CVVComputeResponse);
+  rpc VerifyCVV (CVVVerifyRequest) returns (CVVVerifyResponse);
+
+  rpc ComputeMAC (MACRequest) returns (MACResponse);
+  rpc VerifyMAC (VerifyMACRequest) returns (VerifyMACResponse);
+
+  rpc SignISO20022 (ISO20022SignRequest) returns (ISO20022SignResponse);
+  rpc VerifyISO20022 (ISO20022VerifyRequest) returns (ISO20022VerifyResponse);
+  rpc EncryptISO20022 (ISO20022EncryptRequest) returns (ISO20022EncryptResponse);
+  rpc DecryptISO20022 (ISO20022DecryptRequest) returns (ISO20022DecryptResponse);
+  rpc GenerateLAU (LAUGenerateRequest) returns (LAUGenerateResponse);
+  rpc VerifyLAU (LAUVerifyRequest) returns (LAUVerifyResponse);
+}
+
+message PaymentKey {
+  string id = 1;
+  string tenant_id = 2;
+  string key_id = 3;
+  string payment_type = 4;
+  string usage_code = 5;
+  string mode_of_use = 6;
+  string key_version_num = 7;
+  string exportability = 8;
+  string tr31_header = 9;
+  string kcv = 10;
+  string iso20022_party_id = 11;
+  repeated string iso20022_msg_types = 12;
+  string created_at = 13;
+  string updated_at = 14;
+}
+
+message PaymentKeyResponse {
+  PaymentKey item = 1;
+}
+
+message RegisterPaymentKeyRequest {
+  string tenant_id = 1;
+  string key_id = 2;
+  string payment_type = 3;
+  string usage_code = 4;
+  string mode_of_use = 5;
+  string key_version_num = 6;
+  string exportability = 7;
+  string tr31_header = 8;
+  string iso20022_party_id = 9;
+  repeated string iso20022_msg_types = 10;
+}
+
+message ListPaymentKeysRequest {
+  string tenant_id = 1;
+}
+
+message ListPaymentKeysResponse {
+  repeated PaymentKey items = 1;
+}
+
+message GetPaymentKeyRequest {
+  string tenant_id = 1;
+  string id = 2;
+}
+
+message UpdatePaymentKeyRequest {
+  string tenant_id = 1;
+  string id = 2;
+  string payment_type = 3;
+  string usage_code = 4;
+  string mode_of_use = 5;
+  string key_version_num = 6;
+  string exportability = 7;
+  string tr31_header = 8;
+  string iso20022_party_id = 9;
+  repeated string iso20022_msg_types = 10;
+}
+
+message RotatePaymentKeyRequest {
+  string tenant_id = 1;
+  string id = 2;
+  string reason = 3;
+}
+
+message RotatePaymentKeyResponse {
+  string payment_key_id = 1;
+  string key_id = 2;
+  string version_id = 3;
+}
+
+message CreateTR31Request {
+  string tenant_id = 1;
+  string key_id = 2;
+  string tr31_version = 3;
+  string algorithm = 4;
+  string usage_code = 5;
+  string mode_of_use = 6;
+  string key_version_num = 7;
+  string exportability = 8;
+  string kek_key_id = 9;
+  string source_format = 10;
+  string material_b64 = 11;
+}
+
+message CreateTR31Response {
+  string version = 1;
+  string algorithm = 2;
+  string usage_code = 3;
+  string tr31_header = 4;
+  string key_block = 5;
+  string kcv = 6;
+  string source_format = 7;
+}
+
+message ParseTR31Request {
+  string tenant_id = 1;
+  string key_block = 2;
+  bool import_to_kms = 3;
+  string import_name = 4;
+  string import_purpose = 5;
+}
+
+message ParseTR31Response {
+  string version = 1;
+  string algorithm = 2;
+  string usage_code = 3;
+  string kcv = 4;
+  string imported_key_id = 5;
+  bool valid = 6;
+}
+
+message TranslateTR31Request {
+  string tenant_id = 1;
+  string source_key_id = 2;
+  string source_block = 3;
+  string source_format = 4;
+  string target_format = 5;
+  string kek_key_id = 6;
+  string tr31_version = 7;
+  string algorithm = 8;
+  string usage_code = 9;
+  string key_version_num = 10;
+  string exportability = 11;
+}
+
+message TranslateTR31Response {
+  string id = 1;
+  string source_format = 2;
+  string target_format = 3;
+  string result_block = 4;
+  string status = 5;
+}
+
+message ValidateTR31Request {
+  string tenant_id = 1;
+  string key_block = 2;
+}
+
+message ValidateTR31Response {
+  bool valid = 1;
+  string version = 2;
+  string algorithm = 3;
+  string usage_code = 4;
+  string kcv = 5;
+  string reason = 6;
+}
+
+message ListTR31KeyUsagesRequest {
+  string tenant_id = 1;
+}
+
+message ListTR31KeyUsagesResponse {
+  repeated string key_usages = 1;
+}
+
+message TranslatePINRequest {
+  string tenant_id = 1;
+  string source_format = 2;
+  string target_format = 3;
+  string pin_block = 4;
+  string zpk_key_id = 5;
+}
+
+message TranslatePINResponse {
+  string pin_block = 1;
+}
+
+message PVVGenerateRequest {
+  string tenant_id = 1;
+  string pvk_key_b64 = 2;
+  string pin = 3;
+  string pan = 4;
+  string pvki = 5;
+  string source_format = 6;
+  string zpk_key_id = 7;
+}
+
+message PVVGenerateResponse {
+  string pvv = 1;
+}
+
+message PVVVerifyRequest {
+  string tenant_id = 1;
+  string pvk_key_b64 = 2;
+  string pin = 3;
+  string pan = 4;
+  string pvki = 5;
+  string pvv = 6;
+  string zpk_key_id = 7;
+}
+
+message PVVVerifyResponse {
+  bool verified = 1;
+}
+
+message OffsetGenerateRequest {
+  string tenant_id = 1;
+  string pin = 2;
+  string reference_pin = 3;
+  string zpk_key_id = 4;
+}
+
+message OffsetGenerateResponse {
+  string offset = 1;
+}
+
+message OffsetVerifyRequest {
+  string tenant_id = 1;
+  string pin = 2;
+  string reference_pin = 3;
+  string offset = 4;
+  string zpk_key_id = 5;
+}
+
+message OffsetVerifyResponse {
+  bool verified = 1;
+}
+
+message CVVComputeRequest {
+  string tenant_id = 1;
+  string cvk_key_b64 = 2;
+  string pan = 3;
+  string expiry_yymm = 4;
+  string service_code = 5;
+}
+
+message CVVComputeResponse {
+  string cvv = 1;
+}
+
+message CVVVerifyRequest {
+  string tenant_id = 1;
+  string cvk_key_b64 = 2;
+  string pan = 3;
+  string expiry_yymm = 4;
+  string service_code = 5;
+  string cvv = 6;
+}
+
+message CVVVerifyResponse {
+  bool verified = 1;
+}
+
+message MACRequest {
+  string tenant_id = 1;
+  string key_b64 = 2;
+  string data_b64 = 3;
+  int32 algorithm = 4;
+  string type = 5;
+}
+
+message MACResponse {
+  string mac_b64 = 1;
+}
+
+message VerifyMACRequest {
+  string tenant_id = 1;
+  string key_b64 = 2;
+  string data_b64 = 3;
+  string mac_b64 = 4;
+  int32 algorithm = 5;
+  string type = 6;
+}
+
+message VerifyMACResponse {
+  bool verified = 1;
+}
+
+message ISO20022SignRequest {
+  string tenant_id = 1;
+  string key_id = 2;
+  string xml = 3;
+}
+
+message ISO20022SignResponse {
+  string signature_b64 = 1;
+  string signed_xml = 2;
+}
+
+message ISO20022VerifyRequest {
+  string tenant_id = 1;
+  string key_id = 2;
+  string xml = 3;
+  string signature_b64 = 4;
+}
+
+message ISO20022VerifyResponse {
+  bool verified = 1;
+}
+
+message ISO20022EncryptRequest {
+  string tenant_id = 1;
+  string key_id = 2;
+  string xml = 3;
+  string iv = 4;
+  string reference_id = 5;
+}
+
+message ISO20022EncryptResponse {
+  string ciphertext = 1;
+  string iv = 2;
+}
+
+message ISO20022DecryptRequest {
+  string tenant_id = 1;
+  string key_id = 2;
+  string ciphertext = 3;
+  string iv = 4;
+}
+
+message ISO20022DecryptResponse {
+  string xml = 1;
+}
+
+message LAUGenerateRequest {
+  string tenant_id = 1;
+  string key_id = 2;
+  string lau_key_b64 = 3;
+  string message = 4;
+  string context = 5;
+}
+
+message LAUGenerateResponse {
+  string lau_b64 = 1;
+}
+
+message LAUVerifyRequest {
+  string tenant_id = 1;
+  string key_id = 2;
+  string lau_key_b64 = 3;
+  string message = 4;
+  string context = 5;
+  string lau_b64 = 6;
+}
+
+message LAUVerifyResponse {
+  bool verified = 1;
+}

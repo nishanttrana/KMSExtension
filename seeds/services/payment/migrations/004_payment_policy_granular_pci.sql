@@ -1,0 +1,6 @@
+ALTER TABLE payment_policy
+    ADD COLUMN IF NOT EXISTS disable_iso0_pin_block BOOLEAN NOT NULL DEFAULT FALSE;
+
+ALTER TABLE payment_policy
+    ADD COLUMN IF NOT EXISTS decimalization_table TEXT NOT NULL DEFAULT '0123456789012345';
+

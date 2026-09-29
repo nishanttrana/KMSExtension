@@ -1,0 +1,23 @@
+CREATE TABLE IF NOT EXISTS payment_ap2_profile (
+    tenant_id TEXT PRIMARY KEY,
+    enabled BOOLEAN NOT NULL DEFAULT FALSE,
+    allowed_protocol_bindings_json TEXT NOT NULL DEFAULT '["a2a","mcp"]',
+    allowed_transaction_modes_json TEXT NOT NULL DEFAULT '["human_present","human_not_present"]',
+    allowed_payment_rails_json TEXT NOT NULL DEFAULT '["card","ach","rtp"]',
+    allowed_currencies_json TEXT NOT NULL DEFAULT '["USD"]',
+    default_currency TEXT NOT NULL DEFAULT 'USD',
+    require_intent_mandate BOOLEAN NOT NULL DEFAULT TRUE,
+    require_cart_mandate BOOLEAN NOT NULL DEFAULT TRUE,
+    require_payment_mandate BOOLEAN NOT NULL DEFAULT TRUE,
+    require_merchant_signature BOOLEAN NOT NULL DEFAULT TRUE,
+    require_verifiable_credential BOOLEAN NOT NULL DEFAULT TRUE,
+    require_wallet_attestation BOOLEAN NOT NULL DEFAULT FALSE,
+    require_risk_signals BOOLEAN NOT NULL DEFAULT TRUE,
+    require_tokenized_instrument BOOLEAN NOT NULL DEFAULT TRUE,
+    allow_x402_extension BOOLEAN NOT NULL DEFAULT FALSE,
+    max_human_present_amount_minor BIGINT NOT NULL DEFAULT 1000000,
+    max_human_not_present_amount_minor BIGINT NOT NULL DEFAULT 250000,
+    trusted_credential_issuers_json TEXT NOT NULL DEFAULT '[]',
+    updated_by TEXT NOT NULL DEFAULT '',
+    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
